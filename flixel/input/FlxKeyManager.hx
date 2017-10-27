@@ -320,7 +320,6 @@ class FlxKeyManager<Key:Int, KeyList:FlxBaseKeyList> implements IFlxInputManager
 	private inline function updateKeyStates(KeyCode:Int, Down:Bool):Void
 	{
 		var key:FlxInput<Key> = getKey(KeyCode);
-		
 		if (key != null) 
 		{
 			if (Down)
