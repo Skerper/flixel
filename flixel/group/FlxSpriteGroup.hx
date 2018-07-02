@@ -47,6 +47,12 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	public var maxSize(get, set):Int;
 	
 	/**
+	 * Whether to attempt to preserve the ratio of alpha values of group members, or set them directly through 
+	 * the alpha property. Defaults to `false` (preservation).
+	 */
+	public var directAlpha:Bool = false;
+	
+	/**
 	 * Optimization to allow setting position of group without transforming children twice.
 	 */
 	var _skipTransformChildren:Bool = false;
@@ -711,8 +717,14 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 		
 		if (exists && alpha != Value)
 		{
-			var factor:Float = (alpha > 0) ? Value / alpha : 0;
-			transformChildren(alphaTransform, factor);
+			if (!directAlpha && alpha != 0)
+			{
+				var factor:Float = (alpha > 0) ? Value / alpha : 0;
+				transformChildren(alphaTransform, factor);
+			}
+			else{
+				transformChildren(directAlphaTransform, Value);
+			}
 		}
 		return alpha = Value;
 	}
@@ -877,6 +889,7 @@ class FlxTypedSpriteGroup<T:FlxSprite> extends FlxSprite
 	inline function yTransform(Sprite:FlxSprite, Y:Float)                          Sprite.y += Y; // addition
 	inline function angleTransform(Sprite:FlxSprite, Angle:Float)                  Sprite.angle += Angle; // addition
 	inline function alphaTransform(Sprite:FlxSprite, Alpha:Float)                  Sprite.alpha *= Alpha; // multiplication
+	inline function directAlphaTransform(Sprite:FlxSprite, Alpha:Float)            Sprite.alpha = Alpha;  // direct set
 	inline function facingTransform(Sprite:FlxSprite, Facing:Int)                  Sprite.facing = Facing;
 	inline function flipXTransform(Sprite:FlxSprite, FlipX:Bool)                   Sprite.flipX = FlipX;
 	inline function flipYTransform(Sprite:FlxSprite, FlipY:Bool)                   Sprite.flipY = FlipY;
